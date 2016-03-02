@@ -12,11 +12,32 @@
 
 __global__ void SomeTransform(char *input_gpu, int fsize) {
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
+	
 	if (idx < fsize && input_gpu[idx] != '\n') {
 		//input_gpu[idx] = '!';
-		if(input_gpu[idx] >= 'a' && input_gpu[idx] <= 'z')
+		//transform to capital
+		if(input_gpu[idx] >= 'a' && input_gpu[idx] <= 'z'){
 			input_gpu[idx] -= 32;
-	}
+		}
+		//swap all pairs in all words	
+		if(input_gpu[idx] == ' ' || idx==0){
+			char* cur;
+			if(idx==0)
+				cur = input_gpu;
+			else
+				cur = input_gpu+idx+1;
+			while((*cur>'A'&&*cur<'Z')||(*cur>'a'&&*cur<'z')){
+				if((*(cur+1)>'A'&&*(cur+1)<'Z')||(*(cur+1)>'a'&&*(cur+1)<'z')){
+					char temp = *cur;
+					*cur = *(cur+1);
+					*(cur+1) = temp;
+					cur+=2;
+				}
+				else
+					break;
+			}
+		}
+	}	
 }
 
 int main(int argc, char **argv)
@@ -49,7 +70,7 @@ int main(int argc, char **argv)
 	// An example: transform the first 64 characters to '!'
 	// Don't transform over the tail
 	// And don't transform the line breaks
-	SomeTransform<<<fsize/32+1, 32>>>(input_gpu, fsize);
+	SomeTransform<<<fsize/64+1, 64>>>(input_gpu, fsize);
 
 	puts(text_smem.get_cpu_ro());
 	return 0;
