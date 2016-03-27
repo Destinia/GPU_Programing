@@ -5,9 +5,10 @@
 #include <cstdlib>
 #include <functional>
 #include <algorithm>
-#include "SyncedMemory.h"
-#include "Timer.h"
+#include "../utils/SyncedMemory.h"
+#include "../utils/Timer.h"
 #include "counting.h"
+#include <fstream>
 using namespace std;
 
 #define CHECK {\
@@ -66,7 +67,7 @@ int main(int argc, char **argv)
 {
 	// Initialize random text
 	default_random_engine engine(12345);
-	auto text_pos_head = GenerateTestCase(engine, 40000000); // 40 MB data
+	auto text_pos_head = GenerateTestCase(engine, 400); // 40 MB data
 	vector<char> &text = get<0>(text_pos_head);
 	vector<int> &pos = get<1>(text_pos_head);
 	vector<int> &head = get<2>(text_pos_head);
@@ -95,16 +96,44 @@ int main(int argc, char **argv)
 	// Part I check
 	const int *golden = pos.data();
 	const int *yours = pos_yours_sync.get_cpu_ro();
-	int n_match1 = mismatch(golden, golden+n, yours).first - golden;
+	//for check
+	
+	fstream fp3;
+	fp3.open("pos.txt",ios::out);
+	for(int i=0;i<n;i++){
+		fp3<<golden[i]<<' ';
+	}
+	fp3.close();
+
+	
+	/////
+	pair<const int*,const int*> mypair;
+	mypair = mismatch (golden, golden+n, yours);
+	int n_match1 = mypair.first - golden;
+	//int n_match1 = mismatch(golden, golden+n, yours).first - golden;
 	if (n_match1 != n) {
 		puts("Part I WA!");
-		copy_n(golden, n, pos_yours_sync.get_cpu_wo());
+		mypair = mismatch (golden, golden+n, yours);
+		n_match1 = mypair.first - golden;
+		//printf("error:%d ",n_match1);
+		//printf("A: %dMy: %d\n",*mypair.first,*mypair.second);
+		//++mypair.first;++mypair.second;
+		/*while(n_match1 != n){
+			mypair = mismatch (mypair.first, golden+n, mypair.second);
+			n_match1 = mypair.first - golden;
+			printf("error:%d ",n_match1);
+			printf("A: %dMy: %d\n",*mypair.first,*mypair.second);
+			++mypair.first;++mypair.second;
+		}*/
+		//copy_n(golden, n, pos_yours_sync.get_cpu_wo());
 	}
 
 	// Part II
 	int *head_yours_gpu = head_yours_sync.get_gpu_wo();
 	int n_head = ExtractHead(pos_yours_sync.get_gpu_ro(), head_yours_gpu, n);
 	CHECK;
+
+
 
 	// Part II check
 	do {
@@ -124,7 +153,25 @@ int main(int argc, char **argv)
 
 	// Part III
 	// Do whatever your want
+	printf("n: %d\n",n );
+	fstream fp2;
+	fp2.open("text.txt",ios::out);
+	for(int i=0;i<n;i++){
+		fp2<<text_sync.get_cpu_ro()[i]<<' ';
+	}
+	fp2.close();
 	Part3(text_gpu, pos_yours_sync.get_gpu_rw(), head_yours_sync.get_gpu_rw(), n, n_head);
+	//check
+	char *check = new char[n];
+	cudaMemcpy(check,text_gpu,n*sizeof(char),cudaMemcpyDeviceToHost);
+	fstream fp;
+	fp.open("switch.txt",ios::out);
+	for(int i=0;i<n;i++){
+		fp<<check[i]<<' ';
+	}
+	delete[] check;
+	fp.close();
+	//
 	CHECK;
 
 	cudaFree(text_gpu);
