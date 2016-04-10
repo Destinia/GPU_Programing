@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <cstdint>
 #include <cstdlib>
-#include "SyncedMemory.h"
+#include "../utils/SyncedMemory.h"
 #include "lab2.h"
 using namespace std;
 
@@ -37,7 +37,8 @@ int main(int argc, char **argv)
 		g.Generate(frames.get_gpu_wo());
 		fwrite(frames.get_cpu_ro(), sizeof(uint8_t), FRAME_SIZE, fp);
 	}
-
+	
 	fclose(fp);
+	printf("end rendering\n");
 	return 0;
 }
