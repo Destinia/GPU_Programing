@@ -2,10 +2,15 @@
 Please make sure your version is ahead of fcb448b.
 
 # Lab 1
-Please make sure your version is ahead of 3c412cb.
+Please make sure your version is ahead of bf64ada.
 
 # Lab 2
-Under constructing
+Please make sure your version is ahead of 6af5f1c.
+
+# Lab 3
+Please make sure your version is ahead of 827f7e7.
+
+We also provide a testcase which is included in lab3/lab3\_test.zip.
 
 # Git
 If you are not familiar with Git, [this](http://backlogtool.com/git-guide/tw/intro/intro1_1.html) is the tutorial.
