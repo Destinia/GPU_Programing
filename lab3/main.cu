@@ -2,7 +2,8 @@
 #include <cstdint>
 #include <cstdlib>
 #include <algorithm>
-#include "SyncedMemory.h"
+#include "../utils/SyncedMemory.h"
+#include "../utils/Timer.h"
 #include "pgm.h"
 #include "lab3.h"
 using namespace std;
@@ -60,6 +61,9 @@ int main(int argc, char **argv)
 	copy(imgt.get(), imgt.get()+SIZET, target_cpu);
 	copy(imgm.get(), imgm.get()+SIZEM, mask_cpu);
 
+	Timer timer_count_position;
+	timer_count_position.Start();
+
 	PoissonImageCloning(
 		background_s.get_gpu_ro(),
 		target_s.get_gpu_ro(),
@@ -67,6 +71,9 @@ int main(int argc, char **argv)
 		output_s.get_gpu_wo(),
 		wb, hb, wt, ht, oy, ox
 	);
+
+	timer_count_position.Pause();
+	printf_timer(timer_count_position);
 
 	unique_ptr<uint8_t[]> o(new uint8_t[SIZEB]);
 	const float *o_cpu = output_s.get_cpu_ro();
