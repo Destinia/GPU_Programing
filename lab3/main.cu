@@ -18,6 +18,8 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
+	Timer timer_count_position_t;
+	timer_count_position_t.Start();
 	if (argc != 7) {
 		printf("Usage: %s <background> <target> <mask> <offset x> <offset y> <output>\n", argv[0]);
 		abort();
@@ -79,5 +81,7 @@ int main(int argc, char **argv)
 	const float *o_cpu = output_s.get_cpu_ro();
 	transform(o_cpu, o_cpu+SIZEB, o.get(), [](float f) -> uint8_t { return max(min(int(f+0.5f), 255), 0); });
 	WritePPM(o.get(), wb, hb, argv[6]);
+	timer_count_position_t.Pause();
+	printf_timer(timer_count_position_t);
 	return 0;
 }

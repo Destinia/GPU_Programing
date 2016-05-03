@@ -471,7 +471,7 @@ void PoissonImageCloning(
 
 	// downsample iterate
 
-	for(int i = 0; i < 400; ++i ){
+	for(int i = 0; i < 200; ++i ){
 		PoissonImageCloningIteration<<<gdim_8, bdim>>>(
 		fixed_8, mask_8, buf1_8, buf2_8, wt_8, ht_8
 		);
@@ -482,7 +482,7 @@ void PoissonImageCloning(
 	
 	Upsample<<<gdim_8, bdim>>>(buf1_8,buf1_4,wt_8,ht_8,wt_4,ht_4);
 
-	for(int i = 0; i < 100; ++i ){
+	for(int i = 0; i < 20; ++i ){
 		PoissonImageCloningIteration<<<gdim_4, bdim>>>(
 		fixed_4, mask_4, buf1_4, buf2_4, wt_4, ht_4
 		);
@@ -494,7 +494,7 @@ void PoissonImageCloning(
 	Upsample<<<gdim_4, bdim>>>(buf1_4,buf1_d,wt_4,ht_4,wt_d,ht_d);
 
 	
-	for(int i = 0; i < 100; ++i ){
+	for(int i = 0; i < 20; ++i ){
 		PoissonImageCloningIteration<<<gdim_d, bdim>>>(
 		fixed_d, mask_d, buf1_d, buf2_d, wt_d, ht_d
 		);
@@ -511,7 +511,7 @@ void PoissonImageCloning(
 	
 	// iterate
 	
-	for (int i = 0; i < 100; ++i) {
+	for (int i = 0; i < 20; ++i) {
 		PoissonImageCloningIteration<<<gdim, bdim>>>(
 		fixed, mask, buf1, buf2, wt, ht
 		);
