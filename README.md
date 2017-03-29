@@ -1,16 +1,11 @@
 # Lab 0
-Please make sure your version is ahead of fcb448b.
 
 # Lab 1
-Please make sure your version is ahead of bf64ada.
+simple counting
 
 # Lab 2
-Please make sure your version is ahead of 6af5f1c.
+[youtube](https://www.youtube.com/watch?v=ceGGGlcTThg)
 
 # Lab 3
-Please make sure your version is ahead of 827f7e7.
+image fusion
 
-We also provide a testcase which is included in lab3/lab3\_test.zip.
-
-# Git
-If you are not familiar with Git, [this](http://backlogtool.com/git-guide/tw/intro/intro1_1.html) is the tutorial.
